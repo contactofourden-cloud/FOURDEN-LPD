@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>LOPD · Consentimiento Radiología</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0a14;
+  --surf:#13131e;
+  --surf2:#1a1a28;
+  --surf3:#22222e;
+  --border:#2a2a3a;
+  --border-glow:#3a3a52;
+  --accent:#7b68ee;
+  --accent2:#00e5b0;
+  --accent-glow:rgba(123,104,238,0.3);
+  --text:#ffffff;
+  --text-soft:#e0e0f0;
+  --label:#5b8def;
+  --muted:#8a8aa8;
+  --gold:#ffd166;
+  --blue:#5b8def;
+  --blue-soft:#7ba3ff;
+  --green:#4ade80;
+  --red:#ff6b7a;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:-webkit-fill-available;-webkit-text-size-adjust:100%}
+body{font-family:'Sora',sans-serif;background:radial-gradient(ellipse at top,#1a1a30 0%,#0a0a14 60%);color:var(--text);min-height:100vh;font-size:14px;line-height:1.5}
+
+/* HEADER */
+header{background:rgba(19,19,30,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+.logo{width:44px;height:44px;background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 8px 24px var(--accent-glow)}
+.hinfo h1{font-size:15px;font-weight:600;letter-spacing:-0.01em}
+.hinfo p{font-size:11px;color:var(--blue);margin-top:2px;font-family:'JetBrains Mono',monospace;font-weight:500}
+.hbtn-exit{margin-left:auto;background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:12px;color:var(--muted);cursor:pointer;font-family:'Sora',sans-serif;transition:all .25s;font-weight:500}
+.hbtn-exit:hover{border-color:var(--red);color:var(--red);background:rgba(255,107,122,0.08)}
+
+/* MAIN */
+.main{padding:20px;max-width:780px;margin:0 auto}
+
+/* INFO BLOCK */
+.info-block{background:linear-gradient(135deg,rgba(91,141,239,0.1),rgba(123,104,238,0.08));border:1px solid rgba(91,141,239,0.3);border-radius:16px;margin-bottom:20px;overflow:hidden;backdrop-filter:blur(10px)}
+.info-header{padding:16px 20px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background .25s}
+.info-header:hover{background:rgba(91,141,239,0.08)}
+.info-title{display:flex;align-items:center;gap:12px;font-size:13px;font-weight:600;color:var(--blue-soft)}
+.info-icon{font-size:20px}
+.info-chev{color:var(--blue-soft);transition:transform .35s;font-size:12px}
+.info-block.open .info-chev{transform:rotate(180deg)}
+.info-body{max-height:0;overflow:hidden;transition:max-height .35s;padding:0 20px}
+.info-block.open .info-body{max-height:1500px;padding:0 20px 18px}
+.info-body p{font-size:12.5px;line-height:1.65;color:var(--text-soft);margin-bottom:10px}
+.info-body strong{color:var(--blue-soft);font-weight:600}
+
+/* SECTION CARD */
+.section{background:linear-gradient(180deg,var(--surf) 0%,var(--surf2) 100%);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:18px;box-shadow:0 4px 24px rgba(0,0,0,0.2)}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.section-num{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;box-shadow:0 4px 12px var(--accent-glow)}
+.section-title{font-size:16px;font-weight:600;flex:1;color:var(--text);letter-spacing:-0.01em}
+
+/* FORM */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:11px;font-weight:600;margin-bottom:6px;color:var(--blue);text-transform:uppercase;letter-spacing:0.06em;font-family:'JetBrains Mono',monospace}
+.form-group.req label::after{content:'';}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-size:14px;font-family:'Sora',sans-serif;color:var(--text);outline:none;transition:all .2s;font-weight:500}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);background:var(--surf3);box-shadow:0 0 0 3px var(--accent-glow)}
+.form-group input::placeholder{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.main{padding:14px 12px}.section{padding:18px 16px}}
+
+/* CLINIC SEARCH */
+.clinic-wrapper{position:relative}
+.clinic-suggestions{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--surf2);border:1.5px solid var(--accent);border-radius:10px;max-height:240px;overflow-y:auto;z-index:10;display:none;box-shadow:0 12px 32px rgba(0,0,0,0.6)}
+.clinic-suggestions.show{display:block}
+.clinic-suggestion{padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13px;transition:all .15s;color:var(--text-soft)}
+.clinic-suggestion:hover{background:var(--accent);color:white}
+.clinic-suggestion:last-child{border-bottom:none}
+
+.check-wrapper{margin-top:8px;display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .2s}
+.check-wrapper:hover{border-color:var(--border-glow)}
+.check-wrapper input[type=checkbox]{width:18px;height:18px;cursor:pointer;accent-color:var(--accent2)}
+.check-wrapper label{margin:0!important;cursor:pointer;font-size:12px!important;color:var(--text-soft)!important;text-transform:none!important;letter-spacing:0!important;font-family:'Sora',sans-serif!important;font-weight:500!important}
+
+/* TUTOR BLOCK */
+.tutor-block{display:none;background:linear-gradient(135deg,rgba(255,209,102,0.05),rgba(251,146,60,0.05));border:1.5px dashed rgba(255,209,102,0.4);border-radius:14px;padding:18px;margin-top:16px}
+.tutor-block.show{display:block;animation:slideIn .3s ease}
+.tutor-title{font-size:13px;font-weight:600;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* CONSENT TEXT */
+.consent-text{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:18px;font-size:13.5px;line-height:1.75;margin-bottom:16px;color:var(--text-soft)}
+.consent-text strong{color:var(--text);font-weight:600}
+.consent-text .highlight{color:var(--accent2);font-weight:600;text-transform:uppercase;letter-spacing:0.04em}
+.consent-field{display:inline-block;min-width:90px;padding:3px 12px;background:linear-gradient(135deg,var(--gold),#fbbf24);color:#1a1a14;border-radius:6px;font-weight:700;font-family:'JetBrains Mono',monospace;font-size:12px;margin:0 2px;box-shadow:0 2px 8px rgba(255,209,102,0.3)}
+
+/* LEGAL TABLE */
+.legal-intro{font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.65;padding:12px 14px;background:var(--bg);border-left:3px solid var(--blue);border-radius:0 10px 10px 0}
+.legal-table{background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.legal-row{display:grid;grid-template-columns:160px 1fr;border-bottom:1px solid var(--border)}
+.legal-row:last-child{border-bottom:none}
+.legal-label{padding:13px 15px;background:var(--surf2);font-size:11px;font-weight:700;color:var(--blue);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.05em;display:flex;align-items:flex-start}
+.legal-value{padding:13px 15px;font-size:12.5px;line-height:1.7;color:var(--text-soft)}
+.legal-value strong{color:var(--text);font-weight:600}
+@media(max-width:560px){.legal-row{grid-template-columns:1fr}.legal-label{padding-bottom:6px}.legal-value{padding-top:6px}}
+
+/* RADIO GROUP */
+.radio-group{display:flex;gap:12px;margin-bottom:8px}
+.radio-opt{flex:1;padding:14px;background:var(--bg);border:2px solid var(--border);border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .25s;font-size:14px;font-weight:500;color:var(--text-soft)}
+.radio-opt:hover{border-color:var(--border-glow);background:var(--surf3)}
+.radio-opt.selected{border-color:var(--accent2);background:linear-gradient(135deg,rgba(0,229,176,0.1),rgba(123,104,238,0.08));color:var(--accent2);box-shadow:0 0 0 3px rgba(0,229,176,0.15)}
+.radio-opt input[type=radio]{width:18px;height:18px;cursor:pointer;accent-color:var(--accent2)}
+
+/* SIGNATURE */
+.sig-wrapper{background:var(--bg);border:2px dashed var(--border-glow);border-radius:14px;padding:14px;margin-bottom:14px;transition:border-color .25s}
+.sig-wrapper:hover{border-color:var(--accent)}
+.sig-wrapper p{font-size:11px;color:var(--blue);margin-bottom:10px;font-family:'JetBrains Mono',monospace;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+canvas.sig-canvas{width:100%;height:170px;border:1px solid var(--border);border-radius:10px;background:white;cursor:crosshair;display:block;touch-action:none}
+.sig-actions{display:flex;gap:10px;margin-top:10px}
+.sig-clear{flex:1;padding:9px;font-size:11px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;transition:all .2s;font-family:'Sora',sans-serif;font-weight:500}
+.sig-clear:hover{border-color:var(--red);color:var(--red);background:rgba(255,107,122,0.05)}
+
+/* FINAL ACTION BAR */
+.final-bar{background:linear-gradient(135deg,var(--surf) 0%,var(--surf2) 100%);border:1px solid var(--accent2);border-radius:18px;padding:24px;margin-bottom:20px;box-shadow:0 8px 32px rgba(0,229,176,0.15)}
+.final-bar h3{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--accent2)}
+.final-bar p{font-size:12.5px;color:var(--text-soft);margin-bottom:16px;line-height:1.6}
+
+/* BUTTONS */
+button{padding:14px 22px;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Sora',sans-serif;transition:all .25s;letter-spacing:0.02em;width:100%}
+.btn-primary{background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);color:white;box-shadow:0 4px 16px var(--accent-glow)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--accent-glow)}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-clear-all{background:transparent;color:var(--red);border:1.5px solid rgba(255,107,122,0.4);padding:12px;font-size:13px;width:100%;font-weight:500}
+.btn-clear-all:hover{background:rgba(255,107,122,0.08);border-color:var(--red)}
+
+/* SUCCESS */
+#successScreen{display:none;background:linear-gradient(180deg,var(--surf) 0%,var(--surf2) 100%);border:1px solid var(--accent2);border-radius:18px;padding:40px 28px;text-align:center;box-shadow:0 8px 32px rgba(0,229,176,0.2)}
+#successScreen.active{display:block;animation:slideIn .35s ease}
+.success-icon{font-size:72px;margin-bottom:18px;animation:bounce 1s ease infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.success-text h2{font-size:22px;margin-bottom:10px;color:var(--accent2);font-weight:700}
+.success-text p{font-size:13.5px;color:var(--text-soft);margin-bottom:24px;line-height:1.6}
+.success-drive{display:inline-block;padding:14px 28px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:white;border-radius:12px;text-decoration:none;font-weight:600;font-size:13px;margin-bottom:24px;box-shadow:0 4px 16px var(--accent-glow);transition:transform .2s}
+.success-drive:hover{transform:translateY(-2px)}
+.copy-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;max-width:420px;margin-left:auto;margin-right:auto}
+@media(max-width:500px){.copy-row{grid-template-columns:1fr}}
+.copy-btn{padding:12px;background:var(--surf2);border:1px solid var(--border);border-radius:10px;font-size:12px;color:var(--text-soft);cursor:pointer;transition:all .2s;font-family:'Sora',sans-serif;font-weight:500}
+.copy-btn:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(0,229,176,0.05)}
+
+/* STATUS BAR */
+.status-bar{background:var(--surf2);border:1px solid var(--border);border-radius:10px;padding:11px 15px;font-size:12px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-weight:500;position:sticky;top:74px;z-index:50;backdrop-filter:blur(10px);background:rgba(26,26,40,0.9)}
+.status-bar.loading{border-color:var(--accent);color:var(--accent);background:rgba(123,104,238,0.1)}
+.status-bar.error{border-color:var(--red);color:var(--red);background:rgba(255,107,122,0.1)}
+.status-bar.success{border-color:var(--accent2);color:var(--accent2);background:rgba(0,229,176,0.1)}
+.status-dot{width:8px;height:8px;border-radius:50%;background:currentColor;animation:pulse 2s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--surf);border:1px solid var(--accent2);padding:14px 18px;border-radius:10px;font-size:13px;color:var(--accent2);z-index:1000;animation:slideInRight .3s ease;box-shadow:0 12px 32px rgba(0,0,0,0.5);font-weight:500}
+.toast.error{border-color:var(--red);color:var(--red)}
+@keyframes slideInRight{from{transform:translateX(450px);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* MODAL PIN */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:500;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex;animation:fadeIn .25s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--surf);border:1px solid var(--border);border-radius:18px;padding:28px;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.modal-title{font-size:17px;font-weight:600;margin-bottom:8px;color:var(--text)}
+.modal-text{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.5}
+.modal-cancel{background:var(--surf2);color:var(--text-soft);border:1px solid var(--border);width:100%;padding:12px;border-radius:10px;font-size:13px;cursor:pointer;font-family:'Sora',sans-serif;font-weight:500}
+.modal-cancel:hover{border-color:var(--text);background:var(--surf3)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">📋</div>
+  <div class="hinfo">
+    <h1>Consentimiento Digital</h1>
+    <p>RADIOMIMA DENTAL M.A., S.L.</p>
+  </div>
+  <button class="hbtn-exit" onclick="openConfig()" style="margin-left:auto" title="Configuración">⚙️ Config</button>
+</header>
+
+<div class="main" id="mainView">
+
+  <!-- INFO BLOCK plegable (abierto por defecto) -->
+  <div class="info-block open" id="infoBlock">
+    <div class="info-header" onclick="toggleInfo()">
+      <div class="info-title">
+        <span class="info-icon">🛡️</span>
+        <span>Tus datos están seguros con nosotros</span>
+      </div>
+      <span class="info-chev">▼</span>
+    </div>
+    <div class="info-body">
+      <p>Hola, antes de empezar queremos que estés tranquilo. <strong>Te pedimos algunos datos solo para una cosa:</strong> hacerte la prueba radiológica que te ha pedido tu dentista y enviarle a él las imágenes para que pueda atenderte mejor.</p>
+      <p><strong>✅ Nada más, y nada menos.</strong></p>
+      <p><strong>Lo que NO hacemos con tus datos:</strong></p>
+      <p>• <strong>No los vendemos.</strong> Nunca. A nadie.<br>
+      • <strong>No los compartimos</strong> con empresas de publicidad ni terceros ajenos a tu tratamiento.<br>
+      • <strong>No los usamos</strong> para enviarte ofertas, newsletters ni nada parecido.</p>
+      <p><strong>Lo que SÍ hacemos:</strong></p>
+      <p>• Guardamos tus datos en un sistema seguro, solo accesible por nuestro equipo.<br>
+      • Enviamos las imágenes de tu prueba <strong>únicamente a tu clínica dental</strong>, por correo electrónico cifrado.<br>
+      • Cumplimos con la <strong>normativa europea de protección de datos (RGPD)</strong>.</p>
+      <p><strong>Tus derechos:</strong> Puedes pedir en cualquier momento ver tus datos, cambiarlos o que los borremos por completo. Solo tienes que pedirlo en recepción.</p>
+      <p style="background:rgba(0,229,176,0.08);padding:10px 14px;border-radius:8px;border-left:3px solid var(--accent2);margin-top:12px"><strong style="color:var(--accent2)">Si tienes alguna duda, pregúntanos antes de firmar.</strong> Estamos aquí para que te sientas a gusto y entiendas todo lo que firmas.</p>
+    </div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar" id="statusBar">
+    <span class="status-dot"></span>
+    <span id="statusText">Listo para registro</span>
+  </div>
+
+  <!-- 1. DATOS DEL PACIENTE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">Datos del paciente</div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group req">
+        <label>Nombre y apellidos</label>
+        <input type="text" id="nombre" placeholder="Nombre completo">
+      </div>
+      <div class="form-group req">
+        <label>Fecha de nacimiento</label>
+        <input type="date" id="fechaNac" oninput="checkMenor()">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Dirección</label>
+        <input type="text" id="direccion" placeholder="Calle, número">
+      </div>
+      <div class="form-group">
+        <label>Código postal</label>
+        <input type="text" id="cp" placeholder="28001">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Localidad</label>
+        <input type="text" id="localidad" placeholder="Madrid">
+      </div>
+      <div class="form-group">
+        <label>Provincia</label>
+        <input type="text" id="provincia" placeholder="Madrid">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group req">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="correo@ejemplo.com">
+      </div>
+      <div class="form-group req">
+        <label>DNI / NIE</label>
+        <input type="text" id="dni" placeholder="12345678A">
+      </div>
+    </div>
+
+    <div class="form-group req">
+      <label>Teléfono</label>
+      <input type="tel" id="telefono" placeholder="912345678">
+    </div>
+
+    <div class="check-wrapper" onclick="document.getElementById('forzarMenor').click()">
+      <input type="checkbox" id="forzarMenor" onclick="event.stopPropagation()" onchange="checkMenor()">
+      <label for="forzarMenor">Marcar como menor aunque no lo sea</label>
+    </div>
+
+    <div class="tutor-block" id="tutorBlock">
+      <div class="tutor-title">
+        <span style="font-size:18px">👤</span>
+        <span>En caso de menores, datos del tutor / representante legal</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group req">
+          <label>Nombre y apellidos</label>
+          <input type="text" id="tutorNombre" placeholder="Nombre completo">
+        </div>
+        <div class="form-group req">
+          <label>Fecha nacimiento</label>
+          <input type="date" id="tutorFechaNac">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Dirección</label>
+          <input type="text" id="tutorDireccion">
+        </div>
+        <div class="form-group">
+          <label>Código postal</label>
+          <input type="text" id="tutorCP">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Localidad</label>
+          <input type="text" id="tutorLocalidad">
+        </div>
+        <div class="form-group">
+          <label>Provincia</label>
+          <input type="text" id="tutorProvincia">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group req">
+          <label>Email</label>
+          <input type="email" id="tutorEmail">
+        </div>
+        <div class="form-group req">
+          <label>DNI / NIE</label>
+          <input type="text" id="tutorDni">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CLÍNICA Y FECHA -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">Clínica donde se realiza la prueba</div>
+    </div>
+
+    <div class="form-group req">
+      <label>Clínica o profesional sanitario</label>
+      <div class="clinic-wrapper">
+        <input type="text" id="clinica" placeholder="Empieza a escribir el nombre..." autocomplete="off" oninput="searchClinic()">
+        <div class="clinic-suggestions" id="clinicSuggestions"></div>
+      </div>
+      <div class="check-wrapper" onclick="document.getElementById('sinClinica').click()">
+        <input type="checkbox" id="sinClinica" onclick="event.stopPropagation()" onchange="toggleSinClinica()">
+        <label for="sinClinica">No aplica / Sin clínica específica</label>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group req">
+        <label>Fecha de la prueba</label>
+        <input type="date" id="fechaPrueba" oninput="updateConsent()">
+      </div>
+      <div class="form-group">
+        <label>Localidad de firma</label>
+        <input type="text" id="localidadFirma" placeholder="Madrid">
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. CONSENTIMIENTO -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">Consentimiento informado</div>
+    </div>
+
+    <div class="consent-text">
+      Marcando la siguiente casilla, <span class="highlight">AUTORIZO</span> a <strong>RADIOMIMA DENTAL M.A., S.L.</strong>, la comunicación de mis datos personales a la Clínica o profesional sanitario: <span class="consent-field" id="consentClinica">_______________</span>, y en concreto la prueba radiológica realizada en fecha <span class="consent-field" id="consentFecha">__/__/____</span>, con la finalidad de que este centro o profesional pueda estudiarla e incorporarla a mi historia clínica, para su estudio y correcta prestación del servicio sanitario a través de correo electrónico. En caso de querer conocer la dirección exacta de correo electrónico utilizada para la comunicación, podrá consultarla en recepción.
+    </div>
+
+    <div class="consent-text">
+      Autorizo la cesión de mis datos personales a través de correo electrónico, adoptando las medidas de seguridad necesarias para la protección de sus datos personales:
+    </div>
+
+    <div class="radio-group">
+      <label class="radio-opt selected" id="cesionSiOpt">
+        <input type="radio" name="cesion" value="si" checked onchange="updateCesion()">
+        <span>✓ SÍ, autorizo</span>
+      </label>
+      <label class="radio-opt" id="cesionNoOpt">
+        <input type="radio" name="cesion" value="no" onchange="updateCesion()">
+        <span>✗ NO, denegado</span>
+      </label>
+    </div>
+  </div>
+
+  <!-- 4. INFORMACIÓN LEGAL -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">Información básica sobre Protección de Datos</div>
+    </div>
+
+    <div class="legal-intro">
+      En cumplimiento del Reglamento (UE) 2016/679, del Parlamento Europeo y del Consejo de 27 de abril de 2016, y de la Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales.
+    </div>
+
+    <div class="legal-table">
+      <div class="legal-row">
+        <div class="legal-label">Responsable</div>
+        <div class="legal-value"><strong>RADIOMIMA DENTAL M.A., S.L.</strong></div>
+      </div>
+      <div class="legal-row">
+        <div class="legal-label">Finalidad</div>
+        <div class="legal-value">Proporcionar el servicio sanitario contratado.</div>
+      </div>
+      <div class="legal-row">
+        <div class="legal-label">Legitimación</div>
+        <div class="legal-value">Cumplimiento de obligación legal: <strong>Ley 41/2002</strong>, de la autonomía del paciente y de derechos y obligaciones en materia de información y documentación clínica. Consentimiento del interesado. Ejecución de un contrato.</div>
+      </div>
+      <div class="legal-row">
+        <div class="legal-label">Destinatarios</div>
+        <div class="legal-value">Sus datos personales se comunicarán a gestorías, empresas de mantenimiento y/o alojamiento informático para la correcta prestación del servicio, incluyendo herramientas de análisis digital avanzado para el soporte técnico de las imágenes. Se prevén cesiones a administraciones públicas para el cumplimiento de obligaciones legales. Asimismo, los datos e imágenes derivados de las pruebas radiológicas podrán ser remitidos a la clínica dental o profesional sanitario que haya prescrito el estudio, mediante el envío a la dirección de correo electrónico facilitada por dicha clínica, adoptando las medidas de seguridad necesarias, siempre que el paciente haya prestado su consentimiento expreso para ello.</div>
+      </div>
+      <div class="legal-row">
+        <div class="legal-label">Derechos</div>
+        <div class="legal-value">Tiene derecho a acceder, rectificar y suprimir los datos, así como otros derechos, como se explica en la información adicional.</div>
+      </div>
+      <div class="legal-row">
+        <div class="legal-label">Información adicional</div>
+        <div class="legal-value">Puede consultar la información adicional y detallada sobre Protección de Datos Personales expuesta en recepción. <strong>Conservación de Datos:</strong> RADIOMIMA DENTAL M.A., S.L. garantiza la custodia de la documentación clínica mínima legal. Sin embargo, el archivo volumétrico completo (DICOM) solo estará disponible para descarga durante 12 meses. Tras ese periodo, no se garantiza su disponibilidad al paciente.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. FIRMA -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">Firma</div>
+    </div>
+
+    <div class="sig-wrapper">
+      <p>✍ Firma del paciente</p>
+      <canvas id="canvasPaciente" class="sig-canvas"></canvas>
+      <div class="sig-actions">
+        <button class="sig-clear" onclick="clearSig('paciente')">🗑 Limpiar firma</button>
+      </div>
+    </div>
+
+    <div id="tutorSigBlock" style="display:none">
+      <div class="tutor-title" style="margin-top:18px;margin-bottom:12px">
+        <span style="font-size:18px">✍</span>
+        <span>Firma del representante legal (obligatoria para menores)</span>
+      </div>
+      <div class="sig-wrapper">
+        <p>✍ Firma del representante legal</p>
+        <canvas id="canvasTutor" class="sig-canvas"></canvas>
+        <div class="sig-actions">
+          <button class="sig-clear" onclick="clearSig('tutor')">🗑 Limpiar firma</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN FINAL -->
+  <div class="final-bar">
+    <h3>✓ Listo para finalizar</h3>
+    <p>Al pulsar el botón confirmas que has leído y comprendido el consentimiento, y que todos los datos son correctos. Generaremos el PDF y lo guardaremos de forma segura.</p>
+    <button class="btn-primary" id="btnFinalizar" onclick="finalize()">✓ Finalizar y guardar</button>
+    <button class="btn-clear-all" onclick="clearAllData()" style="margin-top:12px">🗑️ Borrar todos los datos del formulario</button>
+  </div>
+
+</div>
+
+<!-- PANTALLA ÉXITO -->
+<div class="main" id="successScreenWrap" style="display:none">
+  <div id="successScreen" class="active" style="display:block">
+    <div class="success-icon">✅</div>
+    <div class="success-text">
+      <h2>Documento firmado correctamente</h2>
+      <p id="successMsg">El PDF está listo. Elige cómo quieres guardarlo:</p>
+    </div>
+    
+    <!-- ACCIÓN PRINCIPAL: compartir (abre diálogo nativo del iPad con Drive, Mail, AirDrop) -->
+    <button class="btn-primary" onclick="shareToDrive()" style="margin-bottom:14px;padding:16px;font-size:15px;max-width:500px;margin-left:auto;margin-right:auto;display:block;width:100%">
+      📤 Compartir / Subir a Drive
+    </button>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:20px;font-family:'Sora',sans-serif">Abre el diálogo del sistema: Drive, Mail, AirDrop, Mensajes…</p>
+    
+    <!-- ACCIONES SECUNDARIAS -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto">
+      <button class="copy-btn" onclick="previewLastPDF()" style="padding:12px">👁 Ver PDF</button>
+      <button class="copy-btn" onclick="downloadLocalLastPDF()" style="padding:12px">💾 Descargar</button>
+    </div>
+    
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:0.05em">📋 Copiar datos del paciente</div>
+    <div class="copy-row">
+      <button class="copy-btn" onclick="copyField('nombre','Nombre')">📋 Nombre</button>
+      <button class="copy-btn" onclick="copyField('dni','DNI')">📋 DNI</button>
+      <button class="copy-btn" onclick="copyField('email','Email')">📋 Email</button>
+      <button class="copy-btn" onclick="copyField('telefono','Teléfono')">📋 Teléfono</button>
+    </div>
+    <div style="max-width:420px;margin:0 auto">
+      <button class="btn-primary" onclick="resetForm()" style="background:var(--surf2);color:var(--text-soft);border:1px solid var(--border);box-shadow:none">+ Nuevo paciente</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CONFIGURACIÓN -->
+<div class="modal-overlay" id="configModal">
+  <div class="modal-box" style="max-width:480px">
+    <div class="modal-title">⚙️ Configuración</div>
+    <div class="modal-text">Opciones de la app. Requiere PIN para modificarlo.</div>
+    
+    <div class="form-group">
+      <label>Nombre sugerido para la carpeta en Drive</label>
+      <input type="text" id="configFolder" placeholder="FOURDEN_LOPD" style="padding:13px 15px;font-size:14px">
+      <p style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">Este nombre se usa al compartir el PDF a Drive. Puedes cambiarlo o elegir otra carpeta al subir.</p>
+    </div>
+    
+    <div class="form-group">
+      <label>Cambiar PIN de seguridad</label>
+      <input type="password" id="configPin" placeholder="Nuevo PIN (4-6 dígitos)" maxlength="6" style="padding:13px 15px;font-size:16px;letter-spacing:6px;text-align:center;font-family:'JetBrains Mono',monospace">
+      <p style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5">Déjalo vacío si no quieres cambiar el PIN actual.</p>
+    </div>
+    
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="modal-cancel" onclick="closeConfig()" style="flex:1">Cancelar</button>
+      <button class="btn-primary" onclick="resetToDefaults()" style="flex:1;background:var(--surf2);color:var(--gold);border:1px solid var(--gold);box-shadow:none;padding:12px">↻ Restaurar</button>
+    </div>
+    <button class="btn-primary" onclick="saveConfig()" style="margin-top:10px;padding:13px">💾 Guardar configuración</button>
+  </div>
+</div>
+
+<!-- MODAL PIN -->
+<div class="modal-overlay" id="pinModal">
+  <div class="modal-box">
+    <div class="modal-title">🔒 PIN de seguridad</div>
+    <div class="modal-text">Introduce el PIN para acceder a la configuración</div>
+    <input type="password" id="pinInput" placeholder="• • • •" maxlength="6" style="width:100%;padding:16px;background:var(--bg);border:2px solid var(--border);border-radius:12px;font-size:24px;color:var(--text);text-align:center;letter-spacing:16px;margin-bottom:16px;font-family:'JetBrains Mono',monospace" oninput="checkPIN()">
+    <button class="modal-cancel" onclick="closePinModal()">Cancelar</button>
+  </div>
+</div>
+
+<!-- LIBRERÍAS -->
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+
+<script>
+// CONFIGURACIÓN POR DEFECTO
+var DEFAULT_FOLDER_ROOT = 'FOURDEN_LOPD';
+var DEFAULT_PIN = '1234';
+
+// Cargar configuración guardada o usar defaults
+function loadConfig(){
+  try {
+    var saved = localStorage.getItem('lopd_config');
+    if(saved){
+      var cfg = JSON.parse(saved);
+      return {
+        folder: cfg.folder || DEFAULT_FOLDER_ROOT,
+        pin: cfg.pin || DEFAULT_PIN
+      };
+    }
+  } catch(e){}
+  return { folder: DEFAULT_FOLDER_ROOT, pin: DEFAULT_PIN };
+}
+
+var CFG = loadConfig();
+var LOPD_FOLDER_ROOT = CFG.folder;
+var PIN = CFG.pin;
+
+var CLINICAS = [
+  'ACOSTA MONICA (CLINICA MADO)','ALCAZABA','MADRIDENT MOREY','DENTANET ASTROS',
+  'POP DENTAL','CLINIC WHITE (C/ALCALA 258)','MYODENT','EL CARMEN','TEBAR',
+  'SALUD Y ARTE DENTAL','VITAL AZA','VAZQUEZ CONEJO AITANA','PEDRO HERRERA',
+  'BOHEMIOS 9','CIODENT','ANGEL CABRERIZO','JARA CARMEN','CM ODONTOLOGIA INTEGRAL RIVAS',
+  'CAYETANO','BACA RAFAEL (MORATALAZ)','CONDE DE CASAL','RUTH GARCIA ALVAREZ DENTIS ARTS',
+  'SISTO & DE VARGAS','PEOPLEDENT','BADUNA RICARDO (RIBAGO)','ULIDENT DUEÑA ANKA',
+  'CLINICA COTIGNOLA CALERUEGA','BERZAL (Mª ROSA)','LUCIA YACAIRA RODRIGUEZ PRINCIPE VERGARA 285'
+];
+
+var signaturePadPaciente, signaturePadTutor;
+
+document.addEventListener('DOMContentLoaded', function(){
+  initSignatures();
+  document.getElementById('fechaPrueba').value = new Date().toISOString().split('T')[0];
+  document.getElementById('localidadFirma').value = 'Madrid';
+});
+
+function initSignatures(){
+  signaturePadPaciente = new SignaturePad(document.getElementById('canvasPaciente'), {penColor:'#000000',backgroundColor:'rgba(255,255,255,0)'});
+  signaturePadTutor = new SignaturePad(document.getElementById('canvasTutor'), {penColor:'#000000',backgroundColor:'rgba(255,255,255,0)'});
+  setTimeout(resizeCanvases, 200);
+}
+
+function resizeCanvases(){
+  var ratio = Math.max(window.devicePixelRatio || 1, 1);
+  document.querySelectorAll('canvas.sig-canvas').forEach(function(canvas){
+    var rect = canvas.getBoundingClientRect();
+    if(rect.width === 0) return;
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    canvas.getContext('2d').scale(ratio, ratio);
+  });
+  if(signaturePadPaciente) signaturePadPaciente.clear();
+  if(signaturePadTutor) signaturePadTutor.clear();
+}
+window.addEventListener('resize', resizeCanvases);
+
+function toggleInfo(){document.getElementById('infoBlock').classList.toggle('open');}
+
+function searchClinic(){
+  var q = document.getElementById('clinica').value.trim().toUpperCase();
+  var box = document.getElementById('clinicSuggestions');
+  if(q.length < 2){box.classList.remove('show');updateConsent();return;}
+  var matches = CLINICAS.filter(function(c){return c.toUpperCase().includes(q);}).slice(0,8);
+  if(matches.length === 0){box.classList.remove('show');updateConsent();return;}
+  box.innerHTML = matches.map(function(c){
+    return '<div class="clinic-suggestion" onclick="pickClinic(\''+c.replace(/'/g,"\\'")+'\')">'+c+'</div>';
+  }).join('');
+  box.classList.add('show');
+  updateConsent();
+}
+
+function pickClinic(name){
+  document.getElementById('clinica').value = name;
+  document.getElementById('clinicSuggestions').classList.remove('show');
+  document.getElementById('sinClinica').checked = false;
+  updateConsent();
+}
+
+function toggleSinClinica(){
+  if(document.getElementById('sinClinica').checked){
+    document.getElementById('clinica').value = 'Sin clínica específica';
+    document.getElementById('clinicSuggestions').classList.remove('show');
+  } else {
+    document.getElementById('clinica').value = '';
+  }
+  updateConsent();
+}
+
+function updateConsent(){
+  var clinica = document.getElementById('clinica').value || '_______________';
+  var fecha = document.getElementById('fechaPrueba').value;
+  var fechaTxt = fecha ? fecha.split('-').reverse().join('/') : '__/__/____';
+  document.getElementById('consentClinica').textContent = clinica;
+  document.getElementById('consentFecha').textContent = fechaTxt;
+}
+
+function updateCesion(){
+  var sel = document.querySelector('input[name="cesion"]:checked').value;
+  document.getElementById('cesionSiOpt').classList.toggle('selected', sel === 'si');
+  document.getElementById('cesionNoOpt').classList.toggle('selected', sel === 'no');
+}
+
+function checkMenor(){
+  var fechaNac = document.getElementById('fechaNac').value;
+  var forzar = document.getElementById('forzarMenor').checked;
+  var esMenor = false;
+  if(fechaNac){
+    var nac = new Date(fechaNac);
+    var hoy = new Date();
+    var edad = hoy.getFullYear() - nac.getFullYear();
+    var m = hoy.getMonth() - nac.getMonth();
+    if(m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--;
+    esMenor = edad < 18;
+  }
+  if(forzar) esMenor = true;
+  document.getElementById('tutorBlock').classList.toggle('show', esMenor);
+  document.getElementById('tutorSigBlock').style.display = esMenor ? 'block' : 'none';
+  if(esMenor) setTimeout(resizeCanvases, 100);
+}
+
+function clearSig(tipo){
+  if(tipo === 'paciente') signaturePadPaciente.clear();
+  else signaturePadTutor.clear();
+}
+
+// Etiquetas legibles para los campos (para mostrar en el aviso)
+var FIELD_LABELS = {
+  nombre: 'Nombre y apellidos',
+  fechaNac: 'Fecha de nacimiento',
+  email: 'Email',
+  dni: 'DNI/NIE',
+  telefono: 'Teléfono',
+  tutorNombre: 'Nombre del tutor',
+  tutorFechaNac: 'Fecha nacimiento del tutor',
+  tutorEmail: 'Email del tutor',
+  tutorDni: 'DNI del tutor',
+  clinica: 'Clínica o profesional sanitario',
+  fechaPrueba: 'Fecha de la prueba'
+};
+
+function validateAll(){
+  var faltantes = [];
+  
+  // Datos paciente
+  var campos = ['nombre','fechaNac','email','dni','telefono'];
+  for(var i = 0; i < campos.length; i++){
+    if(!document.getElementById(campos[i]).value){
+      faltantes.push(FIELD_LABELS[campos[i]]);
+    }
+  }
+  
+  // Tutor si menor
+  if(document.getElementById('tutorBlock').classList.contains('show')){
+    var tutorCampos = ['tutorNombre','tutorFechaNac','tutorEmail','tutorDni'];
+    for(var j = 0; j < tutorCampos.length; j++){
+      if(!document.getElementById(tutorCampos[j]).value){
+        faltantes.push(FIELD_LABELS[tutorCampos[j]]);
+      }
+    }
+  }
+  
+  // Clínica y fecha
+  if(!document.getElementById('clinica').value){
+    faltantes.push(FIELD_LABELS.clinica);
+  }
+  if(!document.getElementById('fechaPrueba').value){
+    faltantes.push(FIELD_LABELS.fechaPrueba);
+  }
+  
+  // LA FIRMA SÍ ES OBLIGATORIA SIEMPRE (sin firma no es válido legalmente)
+  if(signaturePadPaciente.isEmpty()){
+    toast('⚠️ La firma del paciente es imprescindible', 'error');
+    document.getElementById('canvasPaciente').scrollIntoView({behavior:'smooth',block:'center'});
+    return false;
+  }
+  var esMenor = document.getElementById('tutorSigBlock').style.display === 'block';
+  if(esMenor && signaturePadTutor.isEmpty()){
+    toast('⚠️ La firma del representante legal es imprescindible', 'error');
+    document.getElementById('canvasTutor').scrollIntoView({behavior:'smooth',block:'center'});
+    return false;
+  }
+  
+  // Si hay otros datos faltantes, preguntar si quiere continuar
+  if(faltantes.length > 0){
+    var msg = 'Faltan los siguientes datos:\n\n';
+    for(var k = 0; k < faltantes.length; k++){
+      msg += '   • ' + faltantes[k] + '\n';
+    }
+    msg += '\n¿Quieres GUARDAR el documento igualmente?\n\n';
+    msg += '   Aceptar = Guardar sin completar\n';
+    msg += '   Cancelar = Volver a completar';
+    
+    if(!confirm(msg)){
+      // El usuario prefiere completar los datos → llevarle al primer campo vacío
+      var primerVacio = null;
+      var todos = ['nombre','fechaNac','email','dni','telefono','tutorNombre','tutorFechaNac','tutorEmail','tutorDni','clinica','fechaPrueba'];
+      for(var m = 0; m < todos.length; m++){
+        var el = document.getElementById(todos[m]);
+        if(el && !el.value && el.offsetParent !== null){
+          primerVacio = el;
+          break;
+        }
+      }
+      if(primerVacio){
+        primerVacio.focus();
+        primerVacio.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+      return false;
+    }
+    // Si llegamos aquí es que el usuario pulsó Aceptar → continuar guardando
+    toast('✓ Guardando con campos incompletos...');
+  }
+  
+  return true;
+}
+
+async function finalize(){
+  if(!validateAll()) return;
+  
+  setStatus('Generando PDF...', 'loading');
+  document.getElementById('btnFinalizar').disabled = true;
+  
+  try {
+    var data = collectData();
+    var pdfBytes = await generatePDF(data);
+    var filename = 'LOPD_' + sanitize(data.nombre) + '_' + sanitize(data.dni) + '_' + new Date().toISOString().slice(0,16).replace(/[:-]/g,'').replace('T','_') + '.pdf';
+    
+    // Guardar el PDF en memoria para las opciones (compartir / descargar / abrir)
+    window._lastPDF = {
+      bytes: pdfBytes,
+      filename: filename,
+      data: data
+    };
+    
+    setStatus('PDF generado correctamente', 'success');
+    showSuccessScreen(filename);
+  } catch(err){
+    setStatus('Error: ' + err.message, 'error');
+    toast('❌ Error al generar PDF: ' + err.message, 'error');
+    document.getElementById('btnFinalizar').disabled = false;
+  }
+}
+
+// Compartir usando Web Share API (iPad → abre el diálogo nativo con Drive, Mail, AirDrop, etc.)
+async function shareToDrive(){
+  if(!window._lastPDF){
+    toast('No hay PDF para compartir', 'error');
+    return;
+  }
+  
+  try {
+    var blob = new Blob([window._lastPDF.bytes], {type: 'application/pdf'});
+    var file = new File([blob], window._lastPDF.filename, {type: 'application/pdf'});
+    
+    // Navegadores modernos (iPad Safari, Chrome Android) soportan Web Share con archivos
+    if(navigator.canShare && navigator.canShare({files: [file]})){
+      await navigator.share({
+        files: [file],
+        title: 'Consentimiento LOPD',
+        text: 'Documento firmado: ' + window._lastPDF.data.nombre
+      });
+      toast('✓ Compartido correctamente');
+    } else {
+      // Si no soporta compartir archivos, descargar y avisar
+      toast('Tu navegador no soporta compartir. Descargando para que lo subas manualmente...', 'error');
+      downloadLocalLastPDF();
+    }
+  } catch(err){
+    // El usuario canceló, no es un error real
+    if(err.name !== 'AbortError'){
+      toast('No se pudo compartir: ' + err.message, 'error');
+    }
+  }
+}
+
+function downloadLocalLastPDF(){
+  if(!window._lastPDF) return;
+  var blob = new Blob([window._lastPDF.bytes], {type: 'application/pdf'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = window._lastPDF.filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function(){URL.revokeObjectURL(url);}, 1000);
+  toast('✓ PDF descargado');
+}
+
+// Abrir en pestaña nueva para que el paciente lo vea antes de compartir
+function previewLastPDF(){
+  if(!window._lastPDF) return;
+  var blob = new Blob([window._lastPDF.bytes], {type: 'application/pdf'});
+  var url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+function collectData(){
+  var esMenor = document.getElementById('tutorSigBlock').style.display === 'block';
+  return {
+    clinica: document.getElementById('clinica').value,
+    fechaPrueba: document.getElementById('fechaPrueba').value,
+    localidadFirma: document.getElementById('localidadFirma').value || 'Madrid',
+    nombre: document.getElementById('nombre').value,
+    fechaNac: document.getElementById('fechaNac').value,
+    direccion: document.getElementById('direccion').value,
+    cp: document.getElementById('cp').value,
+    localidad: document.getElementById('localidad').value,
+    provincia: document.getElementById('provincia').value,
+    email: document.getElementById('email').value,
+    dni: document.getElementById('dni').value,
+    telefono: document.getElementById('telefono').value,
+    cesion: document.querySelector('input[name="cesion"]:checked').value,
+    esMenor: esMenor,
+    tutorNombre: esMenor ? document.getElementById('tutorNombre').value : '',
+    tutorFechaNac: esMenor ? document.getElementById('tutorFechaNac').value : '',
+    tutorDireccion: esMenor ? document.getElementById('tutorDireccion').value : '',
+    tutorCP: esMenor ? document.getElementById('tutorCP').value : '',
+    tutorLocalidad: esMenor ? document.getElementById('tutorLocalidad').value : '',
+    tutorProvincia: esMenor ? document.getElementById('tutorProvincia').value : '',
+    tutorEmail: esMenor ? document.getElementById('tutorEmail').value : '',
+    tutorDni: esMenor ? document.getElementById('tutorDni').value : '',
+    firmaPaciente: signaturePadPaciente.toDataURL('image/png'),
+    firmaTutor: esMenor ? signaturePadTutor.toDataURL('image/png') : null
+  };
+}
+
+function safe(str){
+  if(!str) return '';
+  return String(str)
+    .replace(/[\u2611\u2610\u2713\u2717\u2715\u2718\u2022\u00B7\u25CF\u25CB\u25A0\u25A1\u25C6\u25C7\u2605\u2606\u25BA\u25C4\u25B2\u25BC]/g, '')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2013\u2014]/g, '-')
+    .replace(/\u2026/g, '...')
+    .replace(/[^\x00-\xFF]/g, function(c){
+      var code = c.charCodeAt(0);
+      if(code >= 0x00C0 && code <= 0x00FF) return c;
+      return '';
+    });
+}
+
+async function generatePDF(data){
+  var P = window.PDFLib;
+  var pdf = await P.PDFDocument.create();
+  var W = 595, H = 842, M = 42;
+  var font = await pdf.embedFont(P.StandardFonts.Helvetica);
+  var fontB = await pdf.embedFont(P.StandardFonts.HelveticaBold);
+  
+  // Colores
+  var BLACK = P.rgb(0, 0, 0);
+  var GREY = P.rgb(0.45, 0.45, 0.45);
+  var LINE = P.rgb(0.75, 0.75, 0.75);
+  
+  // Control de páginas
+  var page = pdf.addPage([W, H]);
+  var y = H - M;
+  
+  // Función helper: si quedan menos de N puntos, crear página nueva
+  function ensureSpace(needed){
+    if(y - needed < M + 20){
+      page = pdf.addPage([W, H]);
+      y = H - M;
+      // Encabezado pequeño en la nueva página
+      page.drawText('CLÁUSULA INFORMATIVA · PROTECCIÓN DE DATOS — RADIOMIMA DENTAL M.A., S.L.', {x:M, y:y, size:8, font:font, color:GREY});
+      y -= 14;
+      page.drawLine({start:{x:M, y:y}, end:{x:W-M, y:y}, thickness:0.3, color:LINE});
+      y -= 14;
+    }
+    return page;
+  }
+  
+  // === ENCABEZADO (solo página 1) ===
+  page.drawText('CLÁUSULA INFORMATIVA · PROTECCIÓN DE DATOS', {x:M, y:y, size:14, font:fontB, color:BLACK});
+  y -= 14;
+  page.drawText('RADIOMIMA DENTAL M.A., S.L.', {x:M, y:y, size:9, font:font, color:GREY});
+  y -= 20;
+  page.drawLine({start:{x:M, y:y}, end:{x:W-M, y:y}, thickness:0.5, color:LINE});
+  y -= 16;
+  
+  // === DATOS PACIENTE ===
+  ensureSpace(150);
+  page.drawText('Datos del paciente', {x:M, y:y, size:11, font:fontB, color:BLACK});
+  y -= 16;
+  y = drawPrettyBlock(page, font, fontB, M, y, W-2*M, [
+    ['Nombre y apellidos', safe(data.nombre), 'Fecha nacimiento', formatDate(data.fechaNac)],
+    ['Dirección', safe(data.direccion), 'C.P.', safe(data.cp)],
+    ['Localidad', safe(data.localidad), 'Provincia', safe(data.provincia)],
+    ['Email', safe(data.email), 'DNI/NIE', safe(data.dni)],
+    ['Teléfono', safe(data.telefono), '', '']
+  ], LINE, GREY);
+  y -= 14;
+  
+  // === DATOS TUTOR (si menor) ===
+  if(data.esMenor){
+    ensureSpace(130);
+    page.drawText('Datos del tutor / representante legal', {x:M, y:y, size:11, font:fontB, color:BLACK});
+    y -= 16;
+    y = drawPrettyBlock(page, font, fontB, M, y, W-2*M, [
+      ['Nombre y apellidos', safe(data.tutorNombre), 'Fecha nacimiento', formatDate(data.tutorFechaNac)],
+      ['Dirección', safe(data.tutorDireccion), 'C.P.', safe(data.tutorCP)],
+      ['Localidad', safe(data.tutorLocalidad), 'Provincia', safe(data.tutorProvincia)],
+      ['Email', safe(data.tutorEmail), 'DNI/NIE', safe(data.tutorDni)]
+    ], LINE, GREY);
+    y -= 14;
+  }
+  
+  // === TEXTO CONSENTIMIENTO ===
+  ensureSpace(100);
+  var consText = 'Marcando la siguiente casilla, AUTORIZO a RADIOMIMA DENTAL M.A., S.L., la comunicación de mis datos personales a la Clínica o profesional sanitario: ' + safe(data.clinica) + ', y en concreto la prueba radiológica realizada en fecha ' + formatDate(data.fechaPrueba) + ', con la finalidad de que este centro o profesional pueda estudiarla e incorporarla a mi historia clínica, para su estudio y correcta prestación del servicio sanitario a través de correo electrónico. En caso de querer conocer la dirección exacta de correo electrónico utilizada para la comunicación, podrá consultarla en recepción.';
+  y = drawWrappedText(page, font, consText, M, y, W-2*M, 9, 12, BLACK);
+  y -= 14;
+  
+  // === CESIÓN SÍ/NO ===
+  ensureSpace(60);
+  var cesionText = 'Autorizo la cesión de mis datos personales a través de correo electrónico, adoptando las medidas de seguridad necesarias para la protección de sus datos personales:';
+  var wrappedCesion = wrapLines(font, cesionText, W - 2*M - 100, 9);
+  for(var wi = 0; wi < wrappedCesion.length; wi++){
+    page.drawText(wrappedCesion[wi], {x:M, y:y - wi*12, size:9, font:font, color:BLACK});
+  }
+  var boxY = y - 4;
+  var boxSize = 12;
+  var siX = W - M - 90;
+  var noX = W - M - 40;
+  page.drawRectangle({x:siX, y:boxY-boxSize, width:boxSize, height:boxSize, borderColor:BLACK, borderWidth:0.8});
+  if(data.cesion === 'si'){
+    page.drawText('X', {x:siX+2.5, y:boxY-boxSize+2, size:11, font:fontB, color:BLACK});
+  }
+  page.drawText('SÍ', {x:siX+boxSize+4, y:boxY-boxSize+3, size:10, font:fontB, color:BLACK});
+  page.drawRectangle({x:noX, y:boxY-boxSize, width:boxSize, height:boxSize, borderColor:BLACK, borderWidth:0.8});
+  if(data.cesion === 'no'){
+    page.drawText('X', {x:noX+2.5, y:boxY-boxSize+2, size:11, font:fontB, color:BLACK});
+  }
+  page.drawText('NO', {x:noX+boxSize+4, y:boxY-boxSize+3, size:10, font:fontB, color:BLACK});
+  y -= (wrappedCesion.length * 12) + 10;
+  
+  // === FECHA Y LUGAR ===
+  ensureSpace(30);
+  var hoy = new Date();
+  var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  page.drawText('En ' + safe(data.localidadFirma) + ', a ' + hoy.getDate() + ' de ' + meses[hoy.getMonth()] + ' de ' + hoy.getFullYear(), {x:M, y:y, size:10, font:font, color:BLACK});
+  y -= 22;
+  
+  // === FIRMA PACIENTE ===
+  ensureSpace(85);
+  page.drawText('Fdo.: ' + safe(data.nombre), {x:M, y:y, size:9, font:fontB, color:BLACK});
+  y -= 8;
+  if(data.firmaPaciente){
+    var img = await pdf.embedPng(data.firmaPaciente);
+    page.drawImage(img, {x:M, y:y-50, width:140, height:50});
+  }
+  y -= 56;
+  page.drawText('Firma del paciente', {x:M, y:y, size:7, font:font, color:GREY});
+  y -= 18;
+  
+  // === FIRMA TUTOR ===
+  if(data.esMenor && data.firmaTutor){
+    ensureSpace(85);
+    page.drawText('Fdo. (representante legal): ' + safe(data.tutorNombre), {x:M, y:y, size:9, font:fontB, color:BLACK});
+    y -= 8;
+    var imgT = await pdf.embedPng(data.firmaTutor);
+    page.drawImage(imgT, {x:M, y:y-50, width:140, height:50});
+    y -= 56;
+    page.drawText('Firma del representante legal', {x:M, y:y, size:7, font:font, color:GREY});
+    y -= 18;
+  }
+  
+  y -= 8;
+  
+  // === INFO BÁSICA PROTECCIÓN DATOS ===
+  ensureSpace(60);
+  page.drawLine({start:{x:M, y:y}, end:{x:W-M, y:y}, thickness:0.5, color:LINE});
+  y -= 14;
+  page.drawText('Información básica sobre Protección de Datos', {x:M, y:y, size:11, font:fontB, color:BLACK});
+  y -= 12;
+  var introText = 'En cumplimiento del Reglamento (UE) 2016/679, del Parlamento Europeo y del Consejo de 27 de abril de 2016, y de la Ley Orgánica 3/2018, de 5 de diciembre, de Protección de Datos Personales y garantía de los derechos digitales.';
+  y = drawWrappedText(page, font, introText, M, y, W-2*M, 7, 10, GREY);
+  y -= 10;
+  
+  // === TABLA LEGAL CON PAGINACIÓN ===
+  var legalRows = [
+    ['Responsable', 'RADIOMIMA DENTAL M.A., S.L.'],
+    ['Finalidad', 'Proporcionar el servicio sanitario contratado'],
+    ['Legitimación', 'Cumplimiento de obligación legal: Ley 41/2002, de la autonomía del paciente y de derechos y obligaciones en materia de información y documentación clínica. Consentimiento del interesado. Ejecución de un contrato.'],
+    ['Destinatarios', 'Sus datos personales se comunicarán a gestorías, empresas de mantenimiento y/o alojamiento informático para la correcta prestación del servicio, incluyendo herramientas de análisis digital avanzado para el soporte técnico de las imágenes. Se prevén cesiones a administraciones públicas para el cumplimiento de obligaciones legales. Asimismo, los datos e imágenes derivados de las pruebas radiológicas podrán ser remitidos a la clínica dental o profesional sanitario que haya prescrito el estudio, mediante el envío a la dirección de correo electrónico facilitada por dicha clínica, adoptando las medidas de seguridad necesarias, siempre que el paciente haya prestado su consentimiento expreso para ello.'],
+    ['Derechos', 'Tiene derecho a acceder, rectificar y suprimir los datos, así como otros derechos, como se explica en la información adicional'],
+    ['Información adicional', 'Puede consultar la información adicional y detallada sobre Protección de Datos Personales expuesta en recepción. Conservación de Datos: RADIOMIMA DENTAL M.A., S.L. garantiza la custodia de la documentación clínica mínima legal. Sin embargo, el archivo volumétrico completo (DICOM) solo estará disponible para descarga durante 12 meses. Tras ese periodo, no se garantiza su disponibilidad al paciente.']
+  ];
+  
+  var labelW = 95;
+  var valueX = M + labelW + 6;
+  var valueW = W - M - valueX;
+  
+  for(var i = 0; i < legalRows.length; i++){
+    // Calcular cuántas líneas ocupa el texto
+    var linesNeeded = wrapLines(font, legalRows[i][1], valueW, 7.5).length;
+    var rowHeight = linesNeeded * 10 + 6;
+    
+    ensureSpace(rowHeight);
+    
+    page.drawText(legalRows[i][0], {x:M, y:y, size:8, font:fontB, color:BLACK});
+    y = drawWrappedText(page, font, legalRows[i][1], valueX, y, valueW, 7.5, 10, BLACK);
+    y -= 4;
+  }
+  
+  return await pdf.save();
+}
+
+// Dibuja una tabla bonita con líneas finas como el PDF original de 12:05
+function drawPrettyBlock(page, font, fontB, x, y, width, rows, lineColor, labelColor){
+  var P = window.PDFLib;
+  var ROW_H = 26;
+  var colW = width / 2;
+  var totalH = ROW_H * rows.length;
+  
+  // Borde exterior suave
+  page.drawRectangle({x:x, y:y - totalH, width:width, height:totalH, borderColor:lineColor, borderWidth:0.5});
+  
+  for(var i = 0; i < rows.length; i++){
+    var rowY = y - i*ROW_H;
+    
+    // Línea horizontal separadora entre filas
+    if(i > 0){
+      page.drawLine({start:{x:x, y:rowY}, end:{x:x+width, y:rowY}, thickness:0.3, color:lineColor});
+    }
+    
+    // Línea vertical entre columnas (solo si hay 2 columnas)
+    if(rows[i][2]){
+      page.drawLine({start:{x:x+colW, y:rowY}, end:{x:x+colW, y:rowY-ROW_H}, thickness:0.3, color:lineColor});
+    }
+    
+    // Label arriba (gris, pequeño)
+    page.drawText(safe(rows[i][0]), {x:x+8, y:rowY-10, size:7, font:font, color:labelColor});
+    // Valor abajo (negro, grande)
+    page.drawText(safe(rows[i][1]) || '', {x:x+8, y:rowY-21, size:10, font:fontB, color:P.rgb(0,0,0)});
+    
+    if(rows[i][2]){
+      page.drawText(safe(rows[i][2]), {x:x+colW+8, y:rowY-10, size:7, font:font, color:labelColor});
+      page.drawText(safe(rows[i][3]) || '', {x:x+colW+8, y:rowY-21, size:10, font:fontB, color:P.rgb(0,0,0)});
+    }
+  }
+  
+  return y - totalH;
+}
+
+function drawWrappedText(page, font, text, x, y, maxWidth, size, lineHeight, color){
+  var P = window.PDFLib;
+  var safeText = safe(text);
+  var words = safeText.split(' '), line = '', lines = [];
+  for(var i = 0; i < words.length; i++){
+    var test = line + words[i] + ' ';
+    if(font.widthOfTextAtSize(test, size) > maxWidth && line){
+      lines.push(line.trim());
+      line = words[i] + ' ';
+    } else line = test;
+  }
+  if(line) lines.push(line.trim());
+  var col = color || P.rgb(0,0,0);
+  for(var j = 0; j < lines.length; j++){
+    page.drawText(lines[j], {x:x, y:y - j*lineHeight, size:size, font:font, color:col});
+  }
+  return y - lines.length * lineHeight;
+}
+
+// Solo calcula las líneas sin dibujar (para la cesión SÍ/NO)
+function wrapLines(font, text, maxWidth, size){
+  var safeText = safe(text);
+  var words = safeText.split(' '), line = '', lines = [];
+  for(var i = 0; i < words.length; i++){
+    var test = line + words[i] + ' ';
+    if(font.widthOfTextAtSize(test, size) > maxWidth && line){
+      lines.push(line.trim());
+      line = words[i] + ' ';
+    } else line = test;
+  }
+  if(line) lines.push(line.trim());
+  return lines;
+}
+
+function formatDate(d){
+  if(!d) return '';
+  var p = d.split('-');
+  return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function bytesToBase64(bytes){
+  return new Promise(function(resolve){
+    var blob = new Blob([bytes]);
+    var reader = new FileReader();
+    reader.onload = function(){resolve(reader.result.split(',')[1]);};
+    reader.readAsDataURL(blob);
+  });
+}
+
+function sanitize(s){return (s || 'sin_nombre').replace(/[^a-zA-Z0-9]/g, '_').substr(0, 40);}
+
+function showSuccessScreen(filename){
+  document.getElementById('mainView').style.display = 'none';
+  document.getElementById('successScreenWrap').style.display = 'block';
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function copyField(fieldId, label){
+  var val = document.getElementById(fieldId).value;
+  if(!val){toast('Campo vacio','error');return;}
+  navigator.clipboard.writeText(val).then(function(){toast('OK ' + label + ' copiado');});
+}
+
+function clearAllData(){
+  if(!confirm('⚠️ ¿Seguro que quieres borrar TODOS los datos del formulario?\n\nSe borrarán:\n• Todos los campos del paciente\n• Datos del tutor (si aplica)\n• Clínica y fecha seleccionadas\n• Las firmas\n\nEsta acción no se puede deshacer.')) return;
+  
+  // Borrar todos los campos
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"]').forEach(function(el){el.value = '';});
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el){el.checked = false;});
+  document.querySelector('input[name="cesion"][value="si"]').checked = true;
+  
+  // Borrar firmas
+  signaturePadPaciente.clear();
+  signaturePadTutor.clear();
+  
+  // Ocultar bloques de tutor
+  document.getElementById('tutorBlock').classList.remove('show');
+  document.getElementById('tutorSigBlock').style.display = 'none';
+  
+  // Borrar cualquier borrador en localStorage por si acaso
+  try {
+    var keys = Object.keys(localStorage);
+    for(var i = 0; i < keys.length; i++){
+      if(keys[i].indexOf('lopd_draft') === 0 || keys[i].indexOf('fdn_lopd') === 0){
+        localStorage.removeItem(keys[i]);
+      }
+    }
+  } catch(e){}
+  
+  // Restablecer valores por defecto
+  document.getElementById('fechaPrueba').value = new Date().toISOString().split('T')[0];
+  document.getElementById('localidadFirma').value = 'Madrid';
+  
+  // Actualizar visual
+  updateCesion();
+  updateConsent();
+  
+  toast('🗑️ Todos los datos han sido borrados');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function resetForm(){
+  document.querySelectorAll('input[type="text"],input[type="email"],input[type="tel"],input[type="date"]').forEach(function(el){el.value = '';});
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(el){el.checked = false;});
+  document.querySelector('input[name="cesion"][value="si"]').checked = true;
+  signaturePadPaciente.clear();
+  signaturePadTutor.clear();
+  document.getElementById('tutorBlock').classList.remove('show');
+  document.getElementById('tutorSigBlock').style.display = 'none';
+  document.getElementById('successScreenWrap').style.display = 'none';
+  document.getElementById('mainView').style.display = 'block';
+  document.getElementById('fechaPrueba').value = new Date().toISOString().split('T')[0];
+  document.getElementById('localidadFirma').value = 'Madrid';
+  document.getElementById('btnFinalizar').disabled = false;
+  
+  // Asegurar que no quedan restos de datos del paciente en el dispositivo
+  try {
+    var keys = Object.keys(localStorage);
+    for(var i = 0; i < keys.length; i++){
+      if(keys[i].indexOf('lopd_draft') === 0 || keys[i].indexOf('fdn_lopd_draft') === 0){
+        localStorage.removeItem(keys[i]);
+      }
+    }
+  } catch(e){}
+  
+  setStatus('Listo para registro', '');
+  updateCesion();
+  updateConsent();
+  setTimeout(resizeCanvases, 100);
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function requestExit(){
+  // Función dejada vacía por compatibilidad, el botón de salir se ha eliminado
+}
+
+// ========== CONFIGURACIÓN ==========
+function openConfig(){
+  document.getElementById('pinModal').classList.add('active');
+  document.getElementById('pinInput').value = '';
+  setTimeout(function(){document.getElementById('pinInput').focus();}, 100);
+}
+
+function showConfigModal(){
+  document.getElementById('configFolder').value = LOPD_FOLDER_ROOT;
+  document.getElementById('configPin').value = '';
+  document.getElementById('configModal').classList.add('active');
+}
+
+function closeConfig(){
+  document.getElementById('configModal').classList.remove('active');
+}
+
+function saveConfig(){
+  var folder = document.getElementById('configFolder').value.trim();
+  var newPin = document.getElementById('configPin').value.trim();
+  
+  if(!folder){
+    toast('La carpeta no puede estar vacía', 'error');
+    return;
+  }
+  
+  // Sanear nombre de carpeta
+  folder = folder.replace(/\//g, '_').replace(/\\/g, '_').trim();
+  
+  // Validar PIN si se cambió
+  if(newPin){
+    if(newPin.length < 4){
+      toast('El PIN debe tener al menos 4 dígitos', 'error');
+      return;
+    }
+    PIN = newPin;
+  }
+  
+  try {
+    localStorage.setItem('lopd_config', JSON.stringify({
+      folder: folder,
+      pin: PIN
+    }));
+    LOPD_FOLDER_ROOT = folder;
+    closeConfig();
+    toast('✓ Configuración guardada');
+  } catch(e){
+    toast('Error al guardar: ' + e.message, 'error');
+  }
+}
+
+function resetToDefaults(){
+  if(!confirm('¿Restaurar la configuración por defecto?\n\n• Carpeta: ' + DEFAULT_FOLDER_ROOT + '\n• PIN: ' + DEFAULT_PIN + '\n\nEsta acción no borra los PDFs ya guardados.')) return;
+  try {
+    localStorage.removeItem('lopd_config');
+    LOPD_FOLDER_ROOT = DEFAULT_FOLDER_ROOT;
+    PIN = DEFAULT_PIN;
+    document.getElementById('configFolder').value = DEFAULT_FOLDER_ROOT;
+    document.getElementById('configPin').value = '';
+    toast('✓ Configuración restaurada');
+  } catch(e){
+    toast('Error: ' + e.message, 'error');
+  }
+}
+function closePinModal(){document.getElementById('pinModal').classList.remove('active');}
+function checkPIN(){
+  var val = document.getElementById('pinInput').value;
+  if(val === PIN){
+    closePinModal();
+    showConfigModal();
+  }
+}
+
+function setStatus(txt, type){
+  var bar = document.getElementById('statusBar');
+  bar.className = 'status-bar' + (type ? ' ' + type : '');
+  document.getElementById('statusText').textContent = txt;
+}
+
+function toast(msg, type){
+  var t = document.createElement('div');
+  t.className = 'toast' + (type === 'error' ? ' error' : '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(function(){t.remove();}, 3000);
+}
+
+document.addEventListener('click', function(e){
+  if(!e.target.closest('.clinic-wrapper')){
+    document.getElementById('clinicSuggestions').classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
