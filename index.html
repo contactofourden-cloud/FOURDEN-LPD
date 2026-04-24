@@ -773,7 +773,7 @@ async function finalize(){
   try {
     var data = collectData();
     var pdfBytes = await generatePDF(data);
-    var filename = 'LOPD_' + sanitize(data.nombre) + '_' + sanitize(data.dni) + '_' + new Date().toISOString().slice(0,16).replace(/[:-]/g,'').replace('T','_') + '.pdf';
+    var filename = buildFilename(data);
     
     // Guardar el PDF en memoria para las opciones (compartir / descargar / abrir)
     window._lastPDF = {
@@ -1143,6 +1143,33 @@ function bytesToBase64(bytes){
 }
 
 function sanitize(s){return (s || 'sin_nombre').replace(/[^a-zA-Z0-9]/g, '_').substr(0, 40);}
+
+// Construye nombre de archivo inteligente: LOPD_Nombre_Apellido1_Apellido2_AAAAMMDD.pdf
+function buildFilename(data){
+  var nombreCompleto = (data.nombre || '').trim();
+  
+  // Quitar tildes usando normalize (compatible con iPad/Safari moderno)
+  var limpio = nombreCompleto.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  
+  // Reemplazar ñ por n (sin tilde ya)
+  limpio = limpio.replace(/ñ/g, 'n').replace(/Ñ/g, 'N');
+  
+  // Quitar cualquier cosa que no sea letra o espacio
+  limpio = limpio.replace(/[^a-zA-Z\s]/g, '').replace(/\s+/g, ' ').trim();
+  
+  // Primeras 3 palabras: nombre + 2 apellidos
+  var partes = limpio.split(' ').filter(function(p){return p.length > 0;}).slice(0, 3);
+  var nombreArchivo = partes.length > 0 ? partes.join('_') : 'SinNombre';
+  
+  // Fecha de nacimiento AAAAMMDD
+  var fechaNac = '';
+  if(data.fechaNac){
+    var p = data.fechaNac.split('-');
+    if(p.length === 3) fechaNac = '_' + p[0] + p[1] + p[2];
+  }
+  
+  return 'LOPD_' + nombreArchivo + fechaNac + '.pdf';
+}
 
 function showSuccessScreen(filename){
   document.getElementById('mainView').style.display = 'none';
